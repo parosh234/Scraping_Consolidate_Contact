@@ -1,1 +1,61 @@
+import pandas as pd
+
+def consolidate_contacts(office365_contacts, icloud_contacts):
+    # Combine contacts from Office 365 and iCloud
+    combined_contacts = pd.concat([office365_contacts, icloud_contacts], ignore_index=True)
+    
+    # Remove duplicate contacts and merge fields to preserve all unique data
+    consolidated_contacts = combined_contacts.groupby(['First Name', 'Last Name', 'Email'], as_index=False).agg({
+        'Phone Number': lambda x: '; '.join(set(x.dropna())),
+        'Company': lambda x: '; '.join(set(x.dropna())),
+        'Job Title': lambda x: '; '.join(set(x.dropna())),
+        'Address': lambda x: '; '.join(set(x.dropna())),
+        'City': lambda x: '; '.join(set(x.dropna())),
+        'State': lambda x: '; '.join(set(x.dropna())),
+        'Country': lambda x: '; '.join(set(x.dropna())),
+        'Notes': lambda x: '; '.join(set(x.dropna()))
+    })
+    
+    return consolidated_contacts
+
+# Sample data for Office 365 contacts
+office365_contacts = pd.DataFrame({
+    'First Name': ['John', 'Jane'],
+    'Last Name': ['Doe', 'Smith'],
+    'Email': ['john.doe@email.com', 'jane.smith@email.com'],
+    'Phone Number': ['123-456-7890', '987-654-3210'],
+    'Company': ['ABC Corp', 'XYZ Ltd'],
+    'Job Title': ['Manager', 'Director'],
+    'Address': ['123 Main St', '456 Elm St'],
+    'City': ['New York', 'Los Angeles'],
+    'State': ['NY', 'CA'],
+    'Country': ['USA', 'USA'],
+    'Notes': ['VIP Client', 'Important Contact']
+})
+
+# Sample data for iCloud contacts
+icloud_contacts = pd.DataFrame({
+    'First Name': ['John', 'Alice'],
+    'Last Name': ['Doe', 'Brown'],
+    'Email': ['john.doe@email.com', 'alice.brown@email.com'],
+    'Phone Number': ['111-222-3333', '555-123-4567'],
+    'Company': ['ABC Corp', 'LMN Inc'],
+    'Job Title': ['CEO', 'Engineer'],
+    'Address': ['789 Pine St', '789 Pine St'],
+    'City': ['Chicago', 'Chicago'],
+    'State': ['IL', 'IL'],
+    'Country': ['USA', 'USA'],
+    'Notes': ['High Priority', 'New Contact']
+})
+
+# Consolidate contacts
+final_contacts = consolidate_contacts(office365_contacts, icloud_contacts)
+
+# Backup the final contacts to a CSV file
+backup_filename = "backup_consolidated_contacts.csv"
+final_contacts.to_csv(backup_filename, index=False)
+
+# Display final consolidated contacts
+print("Consolidated Contacts:")
+print(final_contacts)
 
