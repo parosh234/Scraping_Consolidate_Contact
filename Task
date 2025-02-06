@@ -1,1 +1,6 @@
-
+Write a short program using python:
+Scope of work
+	•	Consolidate 1–6 contacts from Office 365 and iCloud into Office 365 only.
+	•	Remove duplicate contacts and merge entries with different fields to ensure no data loss.
+	•	Preserve data integrity including custom fields, notes, and contact details with multi-language support.
+	•	Create a full, functional backup verifiable in Outlook before making changes.
